@@ -19,12 +19,17 @@ import {
   useTheme,
   InputBase,
   alpha,
-  MenuItem
+  MenuItem,
+  useMediaQuery,
+  OutlinedInput
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useAuth } from '@/components/auth/AuthProvider';
 import api from '@/lib/api';
+import { useStore } from '@/store/useStore';
+import React from 'react';
 
 const StyledSelect = styled(Select)(({ theme }) => ({
   height: '48px',
@@ -65,6 +70,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+// Create a custom input component to fix the notched issue
+const CustomInput = React.forwardRef((props: { notched?: boolean } & React.ComponentProps<typeof StyledInputBase>, ref) => {
+  // Filter out the notched property to prevent the warning
+  const { notched, ...otherProps } = props;
+  return <StyledInputBase ref={ref} {...otherProps} />;
+});
+CustomInput.displayName = 'CustomInput';
+
 const ConfirmButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#F07135',
   color: 'white',
@@ -100,7 +113,8 @@ interface Merchant {
 
 export function Header() {
   const { user } = useAuth();
-  const [merchantId, setMerchantId] = useState<string>('');
+  const { merchantId: storeMerchantId, setMerchantId, setConfirmedMerchantId } = useStore();
+  const [merchantId, setLocalMerchantId] = useState<string>('');
   const [merchantName, setMerchantName] = useState<string>('');
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -109,6 +123,15 @@ export function Header() {
   const [loadingConfirm, setLoadingConfirm] = useState<boolean>(false);
   const [confirmSuccess, setConfirmSuccess] = useState<boolean>(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  
+  // Update local state when store changes
+  useEffect(() => {
+    if (storeMerchantId && storeMerchantId !== merchantId) {
+      setLocalMerchantId(storeMerchantId);
+    }
+  }, [storeMerchantId, merchantId]);
   
   useEffect(() => {
     // Get user data from localStorage
@@ -154,8 +177,9 @@ export function Header() {
           }));
           setMerchants(formattedMerchants);
           
-          // Set default merchant if available
-          if (formattedMerchants.length > 0) {
+          // Set default merchant if available and not already set
+          if (formattedMerchants.length > 0 && !merchantId) {
+            setLocalMerchantId(formattedMerchants[0].id);
             setMerchantId(formattedMerchants[0].id);
             setMerchantName(formattedMerchants[0].name);
           }
@@ -170,10 +194,14 @@ export function Header() {
     fetchMerchants();
     
     return () => clearInterval(intervalId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const handleMerchantChange = (event: SelectChangeEvent<unknown>) => {
     const selectedId = event.target.value as string;
+    setLocalMerchantId(selectedId);
+    
+    // Update the global store
     setMerchantId(selectedId);
     
     // Find merchant name from selected ID
@@ -192,6 +220,10 @@ export function Header() {
     setTimeout(() => {
       setLoadingConfirm(false);
       setConfirmSuccess(true);
+      
+      // Save the confirmed merchant ID to global store
+      setConfirmedMerchantId(merchantId);
+      
       // Reset success after 3 seconds
       setTimeout(() => setConfirmSuccess(false), 3000);
     }, 1000);
@@ -203,190 +235,177 @@ export function Header() {
   ).join(' ') : 'User';
 
   return (
-    <AppBar 
-      position="fixed" 
-      elevation={0}
-      sx={{ 
+    <AppBar
+      position="fixed"
+      sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: '#fff',
-        color: '#000',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        borderBottom: '1px solid #eaeaea'
+        backgroundColor: 'white',
+        color: 'black',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', padding: '0 2rem', minHeight: '72px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Toolbar
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          height: '64px',
+          px: { xs: 2, sm: 3 }
+        }}
+      >
+        {/* Logo and Title - Hidden on mobile as we use hamburger menu there */}
+        <Box 
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            ml: { xs: 5, md: 0 } // Add margin on mobile to account for hamburger button
+          }}
+        >
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component="div"
-            sx={{ 
-              display: 'flex', 
-              fontWeight: 700,
-              color: '#F07135',
-              fontSize: '1.6rem',
-              mr: 5,
-              letterSpacing: '-0.5px',
+            sx={{
+              fontWeight: 'bold',
+              display: { xs: 'none', sm: 'block' }
             }}
           >
-            CASHEERS
+            Casheer Dashboard
           </Typography>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-            <Chip 
-              label="EVENT"
-              size="small"
-              sx={{ 
-                mr: 1.5, 
-                backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                color: theme.palette.primary.main,
-                fontWeight: 600,
-                borderRadius: '4px'
-              }}
-            />
-            <FormControl variant="outlined" size="small">
-              {loading ? (
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  height: '48px', 
-                  width: '300px',
-                  justifyContent: 'center',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '8px',
-                  backgroundColor: alpha(theme.palette.background.paper, 0.9),
-                }}>
-                  <CircularProgress size={24} sx={{ color: '#F07135' }} />
-                </Box>
-              ) : (
-                <Tooltip 
-                  title={merchants.length === 0 ? "No events available" : "Select an event"} 
-                  placement="bottom"
-                  arrow
-                >
-                  <StyledSelect
-                    value={merchantId}
-                    onChange={handleMerchantChange}
-                    IconComponent={KeyboardArrowDownIcon}
-                    displayEmpty
-                    renderValue={(selected) => {
-                      const selectedMerchant = merchants.find(m => m.id === selected);
-                      return (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <StorefrontIcon sx={{ color: '#F07135', mr: 1, fontSize: 20 }} />
-                          <Typography sx={{ fontWeight: 500, color: '#333' }}>
-                            {selectedMerchant ? selectedMerchant.name : "Select Event"}
-                          </Typography>
-                        </Box>
-                      );
-                    }}
-                  >
-                    {merchants.length === 0 ? (
-                      <MenuItem value="" disabled>No events available</MenuItem>
-                    ) : (
-                      merchants.map((merchant) => (
-                        <MenuItem 
-                          key={merchant.id} 
-                          value={merchant.id}
-                          sx={{ 
-                            padding: '10px 16px',
-                            borderRadius: '4px',
-                            margin: '2px 4px',
-                            '&:hover': {
-                              backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                            },
-                            '&.Mui-selected': {
-                              backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                              '&:hover': {
-                                backgroundColor: alpha(theme.palette.primary.main, 0.18),
-                              }
-                            }
-                          }}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <StorefrontIcon sx={{ color: '#F07135', mr: 1, fontSize: 20, opacity: 0.8 }} />
-                            <Typography>{merchant.name}</Typography>
-                          </Box>
-                        </MenuItem>
-                      ))
-                    )}
-                  </StyledSelect>
-                </Tooltip>
-              )}
-            </FormControl>
-          </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {/* <Tooltip 
-            title={confirmSuccess ? "Confirmed successfully!" : "Confirm selected event"} 
-            placement="bottom"
-            arrow
+        {/* Main content of header */}
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            width: { xs: '100%', md: 'auto' },
+            justifyContent: { xs: 'flex-end', md: 'space-between' },
+            ml: { xs: 0, md: 4 }
+          }}
+        >
+          {/* Merchant selector and confirm button */}
+          <Box 
+            sx={{ 
+              display: isTablet ? 'none' : 'flex',
+              alignItems: 'center',
+              mr: { xs: 1, md: 4 },
+              flexDirection: { xs: 'column', md: 'row' },
+              width: { xs: '100%', md: 'auto' }
+            }}
           >
-            <ConfirmButton 
-              variant="contained"
-              onClick={handleConfirm}
-              disabled={loading || loadingConfirm || !merchantId}
-              startIcon={confirmSuccess ? 
-                <CheckCircleIcon sx={{ color: '#ffffff' }} /> : 
-                null
-              }
+            <FormControl sx={{ minWidth: { xs: '100%', md: 300 }, mb: { xs: 1, md: 0 } }}>
+              <StyledSelect
+                value={merchantId}
+                onChange={handleMerchantChange}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Select Merchant' }}
+                input={<CustomInput />}
+                IconComponent={KeyboardArrowDownIcon}
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return (
+                      <Box sx={{ display: 'flex', alignItems: 'center', opacity: 0.7 }}>
+                        <StorefrontIcon sx={{ mr: 1, fontSize: 20 }} />
+                        <Typography>Select a merchant</Typography>
+                      </Box>
+                    );
+                  }
+                  
+                  return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <StorefrontIcon sx={{ mr: 1, fontSize: 20 }} />
+                      <Typography>{merchantName || "Selected Merchant"}</Typography>
+                    </Box>
+                  );
+                }}
+              >
+                {loading ? (
+                  <MenuItem disabled>
+                    <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
+                      <CircularProgress size={20} sx={{ mr: 1 }} />
+                      <Typography>Loading merchants...</Typography>
+                    </Box>
+                  </MenuItem>
+                ) : merchants.length === 0 ? (
+                  <MenuItem disabled>
+                    <Typography>No merchants available</Typography>
+                  </MenuItem>
+                ) : (
+                  merchants.map((merchant) => (
+                    <MenuItem 
+                      key={merchant.id} 
+                      value={merchant.id}
+                      sx={{
+                        py: 1,
+                        '&:hover': {
+                          backgroundColor: 'rgba(240, 113, 53, 0.08)',
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: 'rgba(240, 113, 53, 0.12)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(240, 113, 53, 0.18)',
+                          }
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <StorefrontIcon sx={{ mr: 1, fontSize: 20, color: '#F07135' }} />
+                        <Typography>{merchant.name}</Typography>
+                      </Box>
+                    </MenuItem>
+                  ))
+                )}
+              </StyledSelect>
+            </FormControl>
+          </Box>
+          
+          {/* Time Display - Hidden on mobile */}
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              mr: 4, 
+              opacity: 0.8,
+              display: { xs: 'none', lg: 'block' }
+            }}
+          >
+            {currentTime}
+          </Typography>
+          
+          {/* User Avatar */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar 
               sx={{ 
-                mr: 3,
-                bgcolor: confirmSuccess ? '#4CAF50' : '#F07135',
-                '&:hover': { bgcolor: confirmSuccess ? '#3d8b40' : '#D5612C' },
+                width: 36, 
+                height: 36,
+                bgcolor: '#F07135',
+                fontWeight: 'bold',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             >
-              {loadingConfirm ? (
-                <CircularProgress size={20} sx={{ color: 'white' }} />
-              ) : confirmSuccess ? (
-                "Confirmed"
-              ) : (
-                "Confirm"
-              )}
-            </ConfirmButton>
-          </Tooltip> */}
-
-          <Tooltip 
-            title="User profile" 
-            placement="bottom-end"
-            arrow
-          >
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '8px',
-              '&:hover': {
-                backgroundColor: alpha(theme.palette.primary.main, 0.04),
-              }
-            }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', mr: 1.5 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#333' }}>
-                  {userName} Casheers
-                </Typography>
-                <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.6) }}>
-                  {currentTime}
-                </Typography>
-              </Box>
-              
-              <Avatar 
-                sx={{ 
-                  width: 42, 
-                  height: 42,
-                  bgcolor: alpha(theme.palette.primary.main, 0.15),
-                  color: theme.palette.primary.main,
-                  fontWeight: 'bold',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                  border: '2px solid #fff'
-                }}
-                alt={userData?.email || user?.email || 'User'}
+              {userData?.email ? userData.email.charAt(0).toUpperCase() : 'U'}
+            </Avatar>
+            
+            {/* User Email - Hidden on mobile */}
+            <Box 
+              sx={{ 
+                ml: 2,
+                display: { xs: 'none', sm: 'block' }
+              }}
+            >
+              <Typography 
+                variant="body2" 
+                sx={{ fontWeight: 'medium', lineHeight: 1.2 }}
               >
-                {userData?.email?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
-              </Avatar>
+                {userData?.email || 'User'}
+              </Typography>
+              <Typography 
+                variant="caption" 
+                sx={{ opacity: 0.6, lineHeight: 1.2 }}
+              >
+                {userData?.role || 'Role'}
+              </Typography>
             </Box>
-          </Tooltip>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

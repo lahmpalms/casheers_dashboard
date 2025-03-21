@@ -9,6 +9,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Custom breakpoints for consistent responsive design
+      screens: {
+        'xs': '320px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
       colors: {
         primary: {
           DEFAULT: "#ED6C1F", // Primary brand color

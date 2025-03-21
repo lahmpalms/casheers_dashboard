@@ -177,262 +177,466 @@ export default function DashboardPage() {
     { name: 'Product E', sales: 90, progress: 31 },
   ];
 
-  return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="py-6"
-    >
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
-          Dashboard
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Welcome back, {user?.email?.split('@')[0] || 'User'}! Here&apos;s what&apos;s happening with your business today.
-        </Typography>
-      </Box>
+  return (<>cdcdc</>)
 
-      {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {sampleStats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <motion.div variants={itemVariants}>
-              <Card 
-                elevation={0} 
-                sx={{ 
-                  borderRadius: 2,
-                  height: '100%',
-                  border: '1px solid',
-                  borderColor: 'border.DEFAULT',
-                  transition: 'transform 0.3s, box-shadow 0.3s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-                  }
-                }}
-              >
-                <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        {stat.title}
-                      </Typography>
-                      <Typography variant="h5" component="div" fontWeight={600}>
-                        {stat.value}
-                      </Typography>
-                    </Box>
-                    <Avatar 
-                      sx={{ 
-                        bgcolor: `${stat.color}15`, 
-                        color: stat.color,
-                        width: 48,
-                        height: 48
-                      }}
-                    >
-                      {stat.icon}
-                    </Avatar>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {stat.isPositive ? (
-                      <TrendingUp fontSize="small" color="success" sx={{ mr: 0.5 }} />
-                    ) : (
-                      <TrendingDown fontSize="small" color="error" sx={{ mr: 0.5 }} />
-                    )}
-                    <Typography 
-                      variant="body2" 
-                      color={stat.isPositive ? 'success.main' : 'error.main'}
-                      fontWeight={500}
-                    >
-                      {stat.change}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>
-                      vs last month
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </Grid>
-        ))}
-      </Grid>
+  // return (
+  //   <motion.div
+  //     variants={containerVariants}
+  //     initial="hidden"
+  //     animate="visible"
+  //     className="space-y-6"
+  //   >
+  //     <Box sx={{ mb: 4 }}>
+  //       <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
+  //         Dashboard
+  //       </Typography>
+  //       <Typography variant="body1" color="text.secondary">
+  //         Welcome back, {user?.email?.split('@')[0] || 'User'}! Here&apos;s what&apos;s happening with your business today.
+  //       </Typography>
+  //     </Box>
 
-      {/* Charts */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={8}>
-          <motion.div variants={itemVariants}>
-            <AnalyticsChart 
-              title="Revenue Overview" 
-              type="line" 
-              data={revenueData} 
-            />
-          </motion.div>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <motion.div variants={itemVariants}>
-            <AnalyticsChart 
-              title="Product Distribution" 
-              type="pie" 
-              data={productDistribution} 
-            />
-          </motion.div>
-        </Grid>
-        <Grid item xs={12}>
-          <motion.div variants={itemVariants}>
-            <AnalyticsChart 
-              title="Weekly Orders" 
-              type="bar" 
-              data={ordersData} 
-            />
-          </motion.div>
-        </Grid>
-      </Grid>
+  //     {/* Stats Cards */}
+  //     <Grid container spacing={{ xs: 2, md: 3 }}>
+  //       {sampleStats.map((stat, index) => (
+  //         <Grid item xs={12} sm={6} md={3} key={index}>
+  //           <motion.div variants={itemVariants}>
+  //             <Card 
+  //               sx={{ 
+  //                 height: '100%',
+  //                 boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //                 borderRadius: 2,
+  //                 overflow: 'visible',
+  //                 position: 'relative',
+  //                 transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  //                 '&:hover': {
+  //                   transform: 'translateY(-4px)',
+  //                   boxShadow: '0 12px 20px rgba(0,0,0,0.1)',
+  //                 }
+  //               }}
+  //             >
+  //               <CardContent sx={{ p: { xs: 2, md: 3 }, pb: { xs: 2, md: 3 } }}>
+  //                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+  //                   <Typography 
+  //                     variant="subtitle2" 
+  //                     color="text.secondary"
+  //                     sx={{ 
+  //                       fontSize: { xs: '0.75rem', md: '0.875rem' },
+  //                       fontWeight: 500 
+  //                     }}
+  //                   >
+  //                     {stat.title}
+  //                   </Typography>
+  //                   <Avatar 
+  //                     sx={{ 
+  //                       bgcolor: `${stat.color}15`, 
+  //                       width: { xs: 32, md: 40 }, 
+  //                       height: { xs: 32, md: 40 },
+  //                       color: stat.color,
+  //                       '& .MuiSvgIcon-root': {
+  //                         fontSize: { xs: '1.1rem', md: '1.4rem' }
+  //                       }
+  //                     }}
+  //                   >
+  //                     {stat.icon}
+  //                   </Avatar>
+  //                 </Box>
+  //                 <Typography 
+  //                   variant="h4" 
+  //                   component="div" 
+  //                   sx={{ 
+  //                     fontWeight: 700, 
+  //                     mb: 1,
+  //                     fontSize: { xs: '1.5rem', md: '2rem' }
+  //                   }}
+  //                 >
+  //                   {stat.value}
+  //                 </Typography>
+  //                 <Typography 
+  //                   variant="body2" 
+  //                   sx={{ 
+  //                     display: 'inline-flex', 
+  //                     alignItems: 'center',
+  //                     color: stat.isPositive ? 'success.main' : 'error.main',
+  //                     fontWeight: 600,
+  //                     fontSize: { xs: '0.7rem', md: '0.8rem' }
+  //                   }}
+  //                 >
+  //                   {stat.isPositive ? <TrendingUp sx={{ fontSize: 16, mr: 0.5 }} /> : <TrendingDown sx={{ fontSize: 16, mr: 0.5 }} />}
+  //                   {stat.change}
+  //                 </Typography>
+  //               </CardContent>
+  //             </Card>
+  //           </motion.div>
+  //         </Grid>
+  //       ))}
+  //     </Grid>
 
-      {/* Recent Orders */}
-      <motion.div variants={itemVariants}>
-        <Card elevation={0} className="border border-gray-200 dark:border-gray-800 rounded-xl">
-          <CardHeader
-            title="Recent Orders"
-            action={
-              <Button 
-                variant="text" 
-                size="small" 
-                sx={{ fontWeight: 500 }}
-              >
-                View All
-              </Button>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Box sx={{ overflow: 'auto' }}>
-              <Box sx={{ minWidth: 600, p: 2 }}>
-                <Box sx={{ display: 'flex', fontWeight: 600, py: 1.5, px: 2, bgcolor: 'background.default', borderRadius: 1 }}>
-                  <Box sx={{ width: '20%' }}>Order ID</Box>
-                  <Box sx={{ width: '25%' }}>Customer</Box>
-                  <Box sx={{ width: '20%' }}>Date</Box>
-                  <Box sx={{ width: '15%' }}>Amount</Box>
-                  <Box sx={{ width: '20%' }}>Status</Box>
-                </Box>
-                {recentOrders.map((order, index) => (
-                  <Box 
-                    key={index} 
-                    sx={{ 
-                      display: 'flex', 
-                      py: 2, 
-                      px: 2, 
-                      borderBottom: index !== recentOrders.length - 1 ? '1px solid' : 'none',
-                      borderColor: 'border.DEFAULT',
-                      '&:hover': {
-                        bgcolor: 'background.default'
-                      }
-                    }}
-                  >
-                    <Box sx={{ width: '20%', color: 'primary.main', fontWeight: 500 }}>{order.id}</Box>
-                    <Box sx={{ width: '25%' }}>{order.customer}</Box>
-                    <Box sx={{ width: '20%', color: 'text.secondary' }}>{order.date}</Box>
-                    <Box sx={{ width: '15%', fontWeight: 500 }}>{order.amount}</Box>
-                    <Box sx={{ width: '20%' }}>
-                      <Box 
-                        component="span" 
-                        sx={{ 
-                          py: 0.5, 
-                          px: 1.5, 
-                          borderRadius: 1, 
-                          fontSize: '0.75rem',
-                          fontWeight: 500,
-                          bgcolor: order.status === 'Completed' 
-                            ? 'success.light' 
-                            : order.status === 'Processing' 
-                              ? 'warning.light' 
-                              : 'error.light',
-                          color: order.status === 'Completed' 
-                            ? 'success.main' 
-                            : order.status === 'Processing' 
-                              ? 'warning.main' 
-                              : 'error.main',
-                        }}
-                      >
-                        {order.status}
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      </motion.div>
+  //     {/* Charts Section */}
+  //     <Grid container spacing={{ xs: 2, md: 3 }}>
+  //       {/* Revenue Chart */}
+  //       <Grid item xs={12} lg={8}>
+  //         <motion.div variants={itemVariants}>
+  //           <Card sx={{ 
+  //             height: '100%', 
+  //             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //             borderRadius: 2
+  //           }}>
+  //             <CardHeader
+  //               title="Revenue Overview"
+  //               titleTypographyProps={{ 
+  //                 variant: 'h6', 
+  //                 fontWeight: 600,
+  //                 fontSize: { xs: '1rem', md: '1.1rem' } 
+  //               }}
+  //               action={
+  //                 <IconButton>
+  //                   <MoreVert />
+  //                 </IconButton>
+  //               }
+  //               sx={{ 
+  //                 pb: 0,
+  //                 pt: { xs: 2, md: 2.5 },
+  //                 px: { xs: 2, md: 3 } 
+  //               }}
+  //             />
+  //             <CardContent sx={{ p: { xs: 1, md: 2 } }}>
+  //               <Box sx={{ 
+  //                 height: { xs: 240, md: 300 },
+  //                 p: { xs: 1, md: 2 }
+  //               }}>
+  //                 <AnalyticsChart 
+  //                   type="line"
+  //                   data={revenueData}
+  //                   title="Revenue Overview"
+  //                 />
+  //               </Box>
+  //             </CardContent>
+  //           </Card>
+  //         </motion.div>
+  //       </Grid>
 
-      {/* Top Products */}
-      <Grid item xs={12} lg={4}>
-        <motion.div variants={itemVariants}>
-          <Card 
-            elevation={0} 
-            sx={{ 
-              borderRadius: 2,
-              border: '1px solid',
-              borderColor: 'border.DEFAULT',
-              height: '100%'
-            }}
-          >
-            <CardHeader
-              title="Top Products"
-              action={
-                <IconButton size="small">
-                  <MoreVert fontSize="small" />
-                </IconButton>
-              }
-            />
-            <Divider />
-            <CardContent>
-              <List disablePadding>
-                {topProducts.map((product, index) => (
-                  <ListItem 
-                    key={index} 
-                    disablePadding 
-                    sx={{ 
-                      py: 1.5,
-                      px: 0,
-                      borderBottom: index !== topProducts.length - 1 ? '1px solid' : 'none',
-                      borderColor: 'border.DEFAULT'
-                    }}
-                  >
-                    <ListItemText
-                      primary={product.name}
-                      secondaryTypographyProps={{ component: 'div' }}
-                      secondary={
-                        <Box sx={{ mt: 1 }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                            <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                              {product.sales} sales
-                            </Box>
-                            <Box component="span" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                              {product.progress}%
-                            </Box>
-                          </Box>
-                          <LinearProgress 
-                            variant="determinate" 
-                            value={product.progress} 
-                            sx={{ 
-                              height: 6, 
-                              borderRadius: 1,
-                              bgcolor: 'background.default',
-                              '& .MuiLinearProgress-bar': {
-                                bgcolor: 'primary.main',
-                              }
-                            }}
-                          />
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Grid>
-    </motion.div>
-  );
+  //       {/* Orders Chart */}
+  //       <Grid item xs={12} sm={6} lg={4}>
+  //         <motion.div variants={itemVariants}>
+  //           <Card sx={{ 
+  //             height: '100%', 
+  //             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //             borderRadius: 2
+  //           }}>
+  //             <CardHeader
+  //               title="Weekly Orders"
+  //               titleTypographyProps={{ 
+  //                 variant: 'h6', 
+  //                 fontWeight: 600,
+  //                 fontSize: { xs: '1rem', md: '1.1rem' } 
+  //               }}
+  //               action={
+  //                 <IconButton>
+  //                   <MoreVert />
+  //                 </IconButton>
+  //               }
+  //               sx={{ 
+  //                 pb: 0,
+  //                 pt: { xs: 2, md: 2.5 },
+  //                 px: { xs: 2, md: 3 } 
+  //               }}
+  //             />
+  //             <CardContent sx={{ p: { xs: 1, md: 2 } }}>
+  //               <Box sx={{ 
+  //                 height: { xs: 200, md: 240 },
+  //                 p: { xs: 1, md: 2 }
+  //               }}>
+  //                 <AnalyticsChart 
+  //                   type="bar"
+  //                   data={ordersData}
+  //                   title="Weekly Orders"
+  //                 />
+  //               </Box>
+  //             </CardContent>
+  //           </Card>
+  //         </motion.div>
+  //       </Grid>
+
+  //       {/* Recent Orders Table */}
+  //       <Grid item xs={12} md={6} lg={4}>
+  //         <motion.div variants={itemVariants}>
+  //           <Card sx={{ 
+  //             height: '100%', 
+  //             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //             borderRadius: 2,
+  //             display: 'flex',
+  //             flexDirection: 'column'
+  //           }}>
+  //             <CardHeader
+  //               title="Recent Orders"
+  //               titleTypographyProps={{ 
+  //                 variant: 'h6', 
+  //                 fontWeight: 600,
+  //                 fontSize: { xs: '1rem', md: '1.1rem' } 
+  //               }}
+  //               action={
+  //                 <IconButton>
+  //                   <MoreVert />
+  //                 </IconButton>
+  //               }
+  //               sx={{ 
+  //                 pb: 1,
+  //                 pt: { xs: 2, md: 2.5 },
+  //                 px: { xs: 2, md: 3 } 
+  //               }}
+  //             />
+  //             <Divider />
+  //             <List sx={{ 
+  //               p: 0, 
+  //               overflowY: 'auto',
+  //               flexGrow: 1
+  //             }}>
+  //               {recentOrders.map((order, index) => (
+  //                 <ListItem
+  //                   key={order.id}
+  //                   divider={index !== recentOrders.length - 1}
+  //                   sx={{ 
+  //                     px: { xs: 2, md: 3 },
+  //                     py: { xs: 1, md: 1.5 } 
+  //                   }}
+  //                 >
+  //                   <ListItemText
+  //                     primary={
+  //                       <Box sx={{ 
+  //                         display: 'flex', 
+  //                         justifyContent: 'space-between', 
+  //                         alignItems: 'center',
+  //                         flexWrap: { xs: 'wrap', sm: 'nowrap' }
+  //                       }}>
+  //                         <Typography 
+  //                           variant="body2" 
+  //                           fontWeight={600}
+  //                           sx={{ mr: 1 }}
+  //                         >
+  //                           {order.id}
+  //                         </Typography>
+  //                         <Typography 
+  //                           variant="body2"
+  //                           sx={{ 
+  //                             fontWeight: 500,
+  //                             mr: { xs: 0, sm: 'auto' },
+  //                             flexGrow: { xs: 1, sm: 0 },
+  //                             order: { xs: 3, sm: 0 },
+  //                             width: { xs: '100%', sm: 'auto' },
+  //                             mt: { xs: 0.5, sm: 0 }
+  //                           }}
+  //                         >
+  //                           {order.customer}
+  //                         </Typography>
+  //                         <Typography 
+  //                           variant="body2" 
+  //                           color="text.secondary"
+  //                           sx={{ fontSize: '0.75rem' }}
+  //                         >
+  //                           {order.date}
+  //                         </Typography>
+  //                       </Box>
+  //                     }
+  //                     secondary={
+  //                       <Box sx={{ 
+  //                         display: 'flex', 
+  //                         justifyContent: 'space-between',
+  //                         alignItems: 'center',
+  //                         mt: 0.5
+  //                       }}>
+  //                         <Typography 
+  //                           variant="body2" 
+  //                           fontWeight={600}
+  //                           color="primary"
+  //                         >
+  //                           {order.amount}
+  //                         </Typography>
+  //                         <Box 
+  //                           component="span"
+  //                           sx={{ 
+  //                             px: 1.5,
+  //                             py: 0.5,
+  //                             borderRadius: 1,
+  //                             fontSize: '0.7rem',
+  //                             fontWeight: 600,
+  //                             bgcolor: order.status === 'Completed' 
+  //                               ? 'success.light' 
+  //                               : order.status === 'Processing'
+  //                               ? 'info.light'
+  //                               : 'warning.light',
+  //                             color: order.status === 'Completed' 
+  //                               ? 'success.dark' 
+  //                               : order.status === 'Processing'
+  //                               ? 'info.dark'
+  //                               : 'warning.dark',
+  //                           }}
+  //                         >
+  //                           {order.status}
+  //                         </Box>
+  //                       </Box>
+  //                     }
+  //                   />
+  //                 </ListItem>
+  //               ))}
+  //             </List>
+  //           </Card>
+  //         </motion.div>
+  //       </Grid>
+
+  //       {/* Product Distribution Pie Chart */}
+  //       <Grid item xs={12} md={6} lg={4}>
+  //         <motion.div variants={itemVariants}>
+  //           <Card sx={{ 
+  //             height: '100%', 
+  //             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //             borderRadius: 2
+  //           }}>
+  //             <CardHeader
+  //               title="Product Distribution"
+  //               titleTypographyProps={{ 
+  //                 variant: 'h6', 
+  //                 fontWeight: 600,
+  //                 fontSize: { xs: '1rem', md: '1.1rem' } 
+  //               }}
+  //               action={
+  //                 <IconButton>
+  //                   <MoreVert />
+  //                 </IconButton>
+  //               }
+  //               sx={{ 
+  //                 pb: 0,
+  //                 pt: { xs: 2, md: 2.5 },
+  //                 px: { xs: 2, md: 3 } 
+  //               }}
+  //             />
+  //             <CardContent sx={{ p: { xs: 1, md: 2 } }}>
+  //               <Box sx={{ 
+  //                 height: { xs: 200, md: 240 },
+  //                 p: { xs: 1, md: 2 }
+  //               }}>
+  //                 <AnalyticsChart 
+  //                   type="pie"
+  //                   data={productDistribution}
+  //                   title="Product Distribution"
+  //                 />
+  //               </Box>
+  //             </CardContent>
+  //           </Card>
+  //         </motion.div>
+  //       </Grid>
+
+  //       {/* Inventory Status */}
+  //       <Grid item xs={12} lg={4}>
+  //         <motion.div variants={itemVariants}>
+  //           <Card sx={{ 
+  //             height: '100%', 
+  //             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //             borderRadius: 2
+  //           }}>
+  //             <CardHeader
+  //               title="Inventory Status"
+  //               titleTypographyProps={{ 
+  //                 variant: 'h6', 
+  //                 fontWeight: 600,
+  //                 fontSize: { xs: '1rem', md: '1.1rem' } 
+  //               }}
+  //               action={
+  //                 <IconButton>
+  //                   <MoreVert />
+  //                 </IconButton>
+  //               }
+  //               sx={{ 
+  //                 pb: 1,
+  //                 pt: { xs: 2, md: 2.5 },
+  //                 px: { xs: 2, md: 3 } 
+  //               }}
+  //             />
+  //             <Divider />
+  //             <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+  //               <Box sx={{ mb: 2 }}>
+  //                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+  //                   <Typography variant="body2" fontWeight={500}>Electronics</Typography>
+  //                   <Typography variant="body2" fontWeight={600}>85%</Typography>
+  //                 </Box>
+  //                 <LinearProgress 
+  //                   variant="determinate" 
+  //                   value={85} 
+  //                   sx={{ 
+  //                     height: 6, 
+  //                     borderRadius: 1,
+  //                     bgcolor: 'rgba(0,0,0,0.08)',
+  //                     '& .MuiLinearProgress-bar': {
+  //                       bgcolor: '#0ea5e9',
+  //                       borderRadius: 1
+  //                     }
+  //                   }} 
+  //                 />
+  //               </Box>
+                
+  //               <Box sx={{ mb: 2 }}>
+  //                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+  //                   <Typography variant="body2" fontWeight={500}>Clothing</Typography>
+  //                   <Typography variant="body2" fontWeight={600}>65%</Typography>
+  //                 </Box>
+  //                 <LinearProgress 
+  //                   variant="determinate" 
+  //                   value={65} 
+  //                   sx={{ 
+  //                     height: 6, 
+  //                     borderRadius: 1,
+  //                     bgcolor: 'rgba(0,0,0,0.08)',
+  //                     '& .MuiLinearProgress-bar': {
+  //                       bgcolor: '#8b5cf6',
+  //                       borderRadius: 1
+  //                     }
+  //                   }} 
+  //                 />
+  //               </Box>
+                
+  //               <Box sx={{ mb: 2 }}>
+  //                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+  //                   <Typography variant="body2" fontWeight={500}>Home & Kitchen</Typography>
+  //                   <Typography variant="body2" fontWeight={600}>40%</Typography>
+  //                 </Box>
+  //                 <LinearProgress 
+  //                   variant="determinate" 
+  //                   value={40} 
+  //                   sx={{ 
+  //                     height: 6, 
+  //                     borderRadius: 1,
+  //                     bgcolor: 'rgba(0,0,0,0.08)',
+  //                     '& .MuiLinearProgress-bar': {
+  //                       bgcolor: '#22c55e',
+  //                       borderRadius: 1
+  //                     }
+  //                   }} 
+  //                 />
+  //               </Box>
+                
+  //               <Box>
+  //                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+  //                   <Typography variant="body2" fontWeight={500}>Books</Typography>
+  //                   <Typography variant="body2" fontWeight={600}>78%</Typography>
+  //                 </Box>
+  //                 <LinearProgress 
+  //                   variant="determinate" 
+  //                   value={78} 
+  //                   sx={{ 
+  //                     height: 6, 
+  //                     borderRadius: 1,
+  //                     bgcolor: 'rgba(0,0,0,0.08)',
+  //                     '& .MuiLinearProgress-bar': {
+  //                       bgcolor: '#f59e0b',
+  //                       borderRadius: 1
+  //                     }
+  //                   }} 
+  //                 />
+  //               </Box>
+  //             </CardContent>
+  //           </Card>
+  //         </motion.div>
+  //       </Grid>
+  //     </Grid>
+  //   </motion.div>
+  // );
 } 

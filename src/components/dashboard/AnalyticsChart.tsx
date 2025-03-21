@@ -7,7 +7,7 @@ import { useTheme } from '@/components/ui/ThemeProvider';
 
 interface AnalyticsChartProps {
   title: string;
-  type: 'line' | 'bar' | 'pie';
+  type: 'line' | 'bar' | 'pie' | 'stacked-bar';
   data: any;
 }
 
@@ -74,7 +74,7 @@ export function AnalyticsChart({ title, type, data }: AnalyticsChartProps) {
           } : undefined,
         })),
       });
-    } else if (type === 'bar') {
+    } else if (type === 'bar' || type === 'stacked-bar') {
       setOptions({
         tooltip: {
           trigger: 'axis',
@@ -82,13 +82,36 @@ export function AnalyticsChart({ title, type, data }: AnalyticsChartProps) {
             type: 'shadow',
           },
         },
+        legend: {
+          data: data.series.map((series: any) => series.name),
+          bottom: 0,
+          textStyle: {
+            color: mode === 'dark' ? '#e5e7eb' : '#374151',
+          },
+        },
         grid: {
           left: '3%',
           right: '4%',
-          bottom: '3%',
+          bottom: '18%',
+          top: '3%',
           containLabel: true,
         },
-        xAxis: {
+        xAxis: data.yAxis ? {
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: mode === 'dark' ? '#6b7280' : '#d1d5db',
+            },
+          },
+          axisLabel: {
+            color: mode === 'dark' ? '#e5e7eb' : '#374151',
+          },
+          splitLine: {
+            lineStyle: {
+              color: mode === 'dark' ? 'rgba(107, 114, 128, 0.2)' : 'rgba(209, 213, 219, 0.5)',
+            },
+          },
+        } : {
           type: 'category',
           data: data.xAxis,
           axisLine: {
@@ -98,9 +121,32 @@ export function AnalyticsChart({ title, type, data }: AnalyticsChartProps) {
           },
           axisLabel: {
             color: mode === 'dark' ? '#e5e7eb' : '#374151',
+            interval: 0,
+            rotate: 45,
+            margin: 14,
+            textStyle: {
+              fontSize: 11,
+            },
+            formatter: (value: string) => {
+              if (value.includes(',')) {
+                return value.split(', ').join('\n');
+              }
+              return value;
+            }
           },
         },
-        yAxis: {
+        yAxis: data.yAxis ? {
+          type: 'category',
+          data: data.yAxis,
+          axisLine: {
+            lineStyle: {
+              color: mode === 'dark' ? '#6b7280' : '#d1d5db',
+            },
+          },
+          axisLabel: {
+            color: mode === 'dark' ? '#e5e7eb' : '#374151',
+          },
+        } : {
           type: 'value',
           axisLine: {
             lineStyle: {
@@ -119,10 +165,14 @@ export function AnalyticsChart({ title, type, data }: AnalyticsChartProps) {
         series: data.series.map((series: any) => ({
           name: series.name,
           type: 'bar',
+          stack: series.stack || (type === 'stacked-bar' ? 'total' : undefined),
+          emphasis: series.stack || type === 'stacked-bar' ? {
+            focus: 'series'
+          } : undefined,
           data: series.data,
           itemStyle: {
             color: series.color || muiTheme.palette.primary.main,
-            borderRadius: [4, 4, 0, 0],
+            borderRadius: data.yAxis ? [0, 4, 4, 0] : [4, 4, 0, 0],
           },
         })),
       });

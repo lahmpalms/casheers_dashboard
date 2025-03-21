@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { Box, Container, Toolbar } from '@mui/material';
+import { Box, Container, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
@@ -10,6 +10,9 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f9f9f9' }}>
       <Header />
@@ -18,16 +21,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         component="main"
         sx={{
           flexGrow: 1,
-          width: { xs: '100%', md: `calc(100% - 260px)` },
-          // ml: { xs: 0, md: '260px' },
+          width: '100%',
           mt: '64px',
+          transition: theme => theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
         }}
       >
         <Container 
           maxWidth="xl" 
           sx={{ 
-            py: 3,
-            px: { xs: 3, md: 4 }
+            py: { xs: 2, md: 3 },
+            px: { xs: 2, md: 4 },
+            overflowX: 'hidden'
           }}
         >
           {children}
